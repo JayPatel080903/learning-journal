@@ -1,5 +1,7 @@
-const sunIcon = '☀️', moonIcon = '🌙';
-const navHTML = `
+const sunIcon = "☀️", moonIcon = "🌙";
+
+// Navbar
+document.getElementById("nav-container").innerHTML = `
   <nav>
     <div class="nav-links">
       <a href="index.html">Home</a>
@@ -7,55 +9,45 @@ const navHTML = `
       <a href="projects.html">Projects</a>
       <a href="about.html">About</a>
     </div>
-    <div class="nav-theme">
-      <button id="theme-btn" title="Toggle dark/light mode">${moonIcon}</button>
-    </div>
+    <button id="theme-btn" title="Toggle theme">${moonIcon}</button>
   </nav>
 `;
-const navContainer = document.getElementById('nav-container');
-if (navContainer) navContainer.innerHTML = navHTML;
-const currentPage = location.pathname.split('/').pop();
-document.querySelectorAll('nav a').forEach(link => {
-  if (link.getAttribute('href') === currentPage) link.classList.add('active');
+
+// Active link
+const currentPage = location.pathname.split("/").pop();
+document.querySelectorAll("nav a").forEach(a => {
+  if (a.getAttribute("href") === currentPage) a.classList.add("active");
 });
-function getStoredTheme() { return localStorage.getItem('theme') === 'dark'; }
-function setStoredTheme(isDark) { localStorage.setItem('theme', isDark ? 'dark' : 'light'); }
-function applyTheme(isDark) {
-  document.body.classList.toggle('dark-theme', isDark);
-  if (themeBtn) themeBtn.innerHTML = isDark ? sunIcon : moonIcon;
-  if (themeBtn) themeBtn.title = isDark ? "Switch to light mode" : "Switch to dark mode";
-}
-const themeBtn = document.getElementById('theme-btn');
-applyTheme(getStoredTheme());
-if (themeBtn) {
-  themeBtn.addEventListener('click', function () {
-    const newTheme = !getStoredTheme();
-    setStoredTheme(newTheme);
-    applyTheme(newTheme);
-  });
-}
-function updateFooterDate() {
-  const footerEl = document.getElementById("footer-date");
-  if (footerEl) footerEl.textContent = "Current date & time: " + new Date().toLocaleString();
-}
-updateFooterDate(); setInterval(updateFooterDate, 1000);
-// Animated typewriter and quote (homepage)
-function typeAndErase(msg, elId, typeSpeed = 90, eraseSpeed = 40, pause = 1200) {
-  const el = document.getElementById(elId); let i = 0, writing = true;
-  function typeWriter() {
-    if (writing && i <= msg.length) { el.textContent = msg.slice(0, i); i++; setTimeout(typeWriter, typeSpeed); }
-    else if (writing) { writing = false; setTimeout(typeWriter, pause); }
-    else if (!writing && i >= 0) { el.textContent = msg.slice(0, i); i--; setTimeout(typeWriter, eraseSpeed); }
-    else { writing = true; setTimeout(typeWriter, pause); }
-  } typeWriter();
-}
-if (window.location.pathname.endsWith("index.html")) {
-  typeAndErase("Welcome to Jay's Learning Journal", "animated-message");
-  fetch('https://api.quotable.io/random')
-    .then(r => r.json()).then(q => {
-      const block = document.getElementById('quote-block');
-      if (block) block.textContent = `"${q.content}" —${q.author}`;
-    }).catch(() => { });
+
+// Theme Toggle
+const themeBtn = document.getElementById("theme-btn");
+const isDark = () => localStorage.getItem("theme") === "dark";
+const applyTheme = dark => {
+  document.body.classList.toggle("dark-theme", dark);
+  themeBtn.textContent = dark ? sunIcon : moonIcon;
+  localStorage.setItem("theme", dark ? "dark" : "light");
+};
+applyTheme(isDark());
+themeBtn.onclick = () => applyTheme(!isDark());
+
+// Footer time
+const footer = document.getElementById("footer-date");
+setInterval(() => {
+  footer.textContent = "📅 " + new Date().toLocaleString();
+}, 1000);
+
+// Animated text (home)
+if (location.pathname.endsWith("index.html")) {
+  const msg = "Welcome to Jay's Learning Journal";
+  let i = 0, forward = true;
+  const el = document.getElementById("animated-message");
+  setInterval(() => {
+    el.textContent = msg.slice(0, i);
+    if (forward) i++;
+    if (i === msg.length) forward = false;
+    if (!forward) i--;
+    if (i === 0) forward = true;
+  }, 100);
 }
 // Project summary card (projects.html)
 function renderProjectSummary() {
