@@ -430,6 +430,7 @@ body.dark-theme .preview-sub {
 
 .form-btn {
     display: flex;
+    gap: 1rem;
     justify-content: end;
 }
 
@@ -451,4 +452,17 @@ body.dark-theme .preview-sub {
 .hide-form-btn:hover,
 .form-button:hover {
     background: #224488;
+}
+
+.profile-img-section {
+    display: flex;
+    gap: 1rem;
+    justify-content: start;
+    align-items: center;
+}
+
+.profile-img-section .name {
+    font-weight: 600;
+    font-size: xx-large;
+    margin-bottom: 0;
 }

@@ -218,35 +218,46 @@ function renderCustomCards() {
       </div>
     </div>
   `).join('');
-  customCards.forEach((card, idx) => {
-    const mainHeader = container.querySelectorAll('.card-header')[idx];
-    const cardContent = document.getElementById(`custom-main-content-${idx}`);
-    const toggleIcon = mainHeader.querySelector('.toggle-icon');
-    mainHeader.addEventListener('click', () => {
-      cardContent.classList.toggle('open');
-      toggleIcon.textContent = cardContent.classList.contains('open') ? "−" : "+";
-    });
-    mainHeader.addEventListener('keydown', e => { if (e.key === "Enter" || e.key === " ") mainHeader.click(); });
-    card.subQAs.forEach((qa, si) => {
-      const subHeader = cardContent.querySelectorAll('.sub-card-header')[si];
-      const subContent = document.getElementById(`custom-${idx}-sub-${si}`);
-      const subIcon = subHeader.querySelector('.toggle-icon');
-      subHeader.addEventListener('click', () => {
-        subContent.classList.toggle('open');
-        subIcon.textContent = subContent.classList.contains('open') ? "−" : "+";
+
+  // Expand/collapse main and sub card logic -- safe checks
+  Array.from(container.children).forEach((labCardEl, idx) => {
+    const cardHeader = labCardEl.querySelector('.card-header');
+    const mainContent = labCardEl.querySelector('.card-content');
+    const toggleIcon = cardHeader ? cardHeader.querySelector('.toggle-icon') : null;
+    if (cardHeader && mainContent && toggleIcon) {
+      cardHeader.addEventListener('click', () => {
+        mainContent.classList.toggle('open');
+        toggleIcon.textContent = mainContent.classList.contains('open') ? "−" : "+";
       });
-      subHeader.addEventListener('keydown', e => { if (e.key === "Enter" || e.key === " ") subHeader.click(); });
+      cardHeader.addEventListener('keydown', e => {
+        if (e.key === "Enter" || e.key === " ") cardHeader.click();
+      });
+    }
+    // sub-card expand/collapse
+    Array.from(mainContent.querySelectorAll('.sub-card')).forEach((subCardEl, si) => {
+      const subHeader = subCardEl.querySelector('.sub-card-header');
+      const subContent = subCardEl.querySelector('.sub-card-content');
+      const subIcon = subHeader ? subHeader.querySelector('.toggle-icon') : null;
+      if (subHeader && subContent && subIcon) {
+        subHeader.addEventListener('click', () => {
+          subContent.classList.toggle('open');
+          subIcon.textContent = subContent.classList.contains('open') ? "−" : "+";
+        });
+        subHeader.addEventListener('keydown', e => { if (e.key === "Enter" || e.key === " ") subHeader.click(); });
+      }
     });
-  });
-  document.querySelectorAll('.delete-main-card-btn').forEach(btn => {
-    btn.onclick = function () {
-      let i = btn.getAttribute('data-i');
-      customCards.splice(i, 1);
-      localStorage.setItem('customLabCards', JSON.stringify(customCards));
-      renderCustomCards();
+    // Delete button per card (must be within the current labCardEl!)
+    const deleteBtn = mainContent.querySelector('.delete-main-card-btn');
+    if (deleteBtn) {
+      deleteBtn.onclick = function () {
+        customCards.splice(idx, 1);
+        localStorage.setItem('customLabCards', JSON.stringify(customCards));
+        renderCustomCards();
+      };
     }
   });
 }
+
 if (window.location.pathname.endsWith("journal.html")) { renderCustomCards(); renderPendingSubPreview(); }
 const showFormBtn = document.getElementById('show-form-btn');
 const hideFormBtn = document.getElementById('hide-form-btn');
@@ -262,4 +273,41 @@ if (hideFormBtn && formArea && showFormBtn) {
     formArea.style.display = 'none';
     showFormBtn.style.display = '';
   });
+}
+async function loadJsonReflections() {
+  const response = await fetch('backend/reflections.json');
+  if (!response.ok) return;
+  const entries = await response.json();
+  const container = document.getElementById('json-reflections');
+  if (!container) return;
+  if (!entries.length) {
+    container.innerHTML = "<p>No backend reflections yet.</p>";
+    return;
+  }
+  container.innerHTML = entries.map(e => `
+    <div class="lab-card">
+      <div class="card-header" tabindex="0">
+        <span>${e.date}</span>
+      </div>
+      <div class="card-content open">
+        <div>${e.text}</div>
+      </div>
+    </div>
+  `).join('');
+}
+if (document.getElementById('json-reflections')) loadJsonReflections();
+const exportBtn = document.getElementById('export-json-btn');
+if (exportBtn) {
+  exportBtn.onclick = async () => {
+    const resp = await fetch('backend/reflections.json');
+    if (!resp.ok) return;
+    const data = await resp.text();
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "reflections.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 }
