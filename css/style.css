@@ -906,7 +906,7 @@ body.dark-theme .form-entry-item {
 
 .reflections-actions button {
     background-color: var(--secondary-color);
-    color: #000;
+    color: #007bff;
     border: none;
     padding: 10px 15px;
     border-radius: 8px;
