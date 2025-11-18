@@ -1,313 +1,646 @@
-const sunIcon = "☀️", moonIcon = "🌙";
-
-// Navbar
-document.getElementById("nav-container").innerHTML = `
-  <nav>
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="journal.html">Journal</a>
-      <a href="projects.html">Projects</a>
-      <a href="about.html">About</a>
-    </div>
-    <button id="theme-btn" title="Toggle theme">${moonIcon}</button>
-  </nav>
-`;
-
-// Active link
-const currentPage = location.pathname.split("/").pop();
-document.querySelectorAll("nav a").forEach(a => {
-  if (a.getAttribute("href") === currentPage) a.classList.add("active");
-});
-
-// Theme Toggle
-const themeBtn = document.getElementById("theme-btn");
-const isDark = () => localStorage.getItem("theme") === "dark";
-const applyTheme = dark => {
-  document.body.classList.toggle("dark-theme", dark);
-  themeBtn.textContent = dark ? sunIcon : moonIcon;
-  localStorage.setItem("theme", dark ? "dark" : "light");
-};
-applyTheme(isDark());
-themeBtn.onclick = () => applyTheme(!isDark());
-
-// Footer time
-const footer = document.getElementById("footer-date");
-setInterval(() => {
-  footer.textContent = "📅 " + new Date().toLocaleString();
-}, 1000);
-
-// Animated text (home)
-if (location.pathname.endsWith("index.html")) {
-  const msg = "Welcome to Jay's Learning Journal";
-  let i = 0, forward = true;
-  const el = document.getElementById("animated-message");
-  setInterval(() => {
-    el.textContent = msg.slice(0, i);
-    if (forward) i++;
-    if (i === msg.length) forward = false;
-    if (!forward) i--;
-    if (i === 0) forward = true;
-  }, 100);
-}
-// Project summary card (projects.html)
-function renderProjectSummary() {
-  const summaryContainer = document.getElementById('projects-summary');
-  if (!summaryContainer) return;
-  summaryContainer.innerHTML = `
-    <div class="lab-card" id="project-summary-card">
-      <div class="card-header" tabindex="0">
-        <span>Learning Journal PWA Project — Overview</span>
-      </div>
-      <div class="card-content open" id="project-summary-content">
-        <div>
-          This Learning Journal Progressive Web App (PWA) brings together the essential tools and concepts for modern web app development. Starting with the basics of GitHub, VS Code, and project setup, you’ll build a personal journal site using HTML, CSS, and JavaScript to create a clean and interactive user experience. Your journal is enhanced further with API connections, backend data storage with Python and JSON, and a Flask-powered server that lets you manage your entries and test your app live. By the end, you’ll complete your journey with a fully offline-ready PWA, integrating manifest files and service workers for reliability, and connecting to both browser and third-party APIs for richer features. This project is a showcase of combining frontend and backend technologies, version control, testing workflows, and delivering a complete web application ready for user interaction and future expansion.
-        </div>
-      </div>
-    </div>
-  `;
-}
-if (window.location.pathname.endsWith("projects.html")) renderProjectSummary();
-// Lab cards for journal page (lab 2, lab 3)
-const lab2Journals = [
-  { title: "How did you approach mobile-first design?", content: "I started by designing the layout for mobile size screens first, ensuring that all text, navigation, and content were readable and well spaced on a mobile device. Once the mobile version looked clean, I used CSS media queries to gradually enhance the layout for tablets and desktops." },
-  { title: "What was the most useful HTML or CSS concept you applied this week?", content: "The most useful concept was Flexbox and media queries, which made it easy to align navigation links and structure content sections responsively. Also shared CSS is very useful because all CSS can handle in single file." },
-  { title: "What part of HTML or CSS did you find most challenging or confusing?", content: "Most challenging part of CSS is to handle alignment and spacing for all elements. Otherwise for HTML it is looking easier." }
+// --- Global YouTube Player Variables ---
+let player;
+const videoIds = [
+  'IOy7DVkG-og', // The Best Programming Projects? - Code Jam Project Showcase #5
+  'aPiBYK-Eh_s', // Niche eCommerce Website Development | Project Showcase
+  'Jee_g5uKQ5w', // 🔥 3D Portfolio Website | Interactive & Futuristic Web Design Showcase
+  'MGnPO5K0O0A', // Maksym Marko – WordPress Developer | Website Project Showcase
+  'KfiSCrXvVAw'  // Modern E-Commerce Website Built with Next.js - Full Project Showcase
 ];
-const lab3Journals = [
-  { title: "Which DOM selection methods did you use, and why did you choose them?", content: "I used several DOM selection methods, including getElementById() and querySelectorAll(). getElementById() was used when I needed to target specific elements like the navigation container (nav-container), the journal form (journal-form), and buttons such as the theme toggle (theme-btn), because it directly selects a unique element and is efficient. and querySelectorAll() was used to apply logic to multiple elements, like highlighting the active navigation link, since it allows selecting multiple items using CSS selectors and iterating through them easily." },
-  { title: "What was the most challenging part about linking JavaScript with your HTML?", content: "The most challenging part was ensuring that the JavaScript file loaded correctly on all pages and that elements existed in the DOM before running certain functions. Since the same script is reused across multiple pages, I had to use conditional checks (like if (navContainer) { ... }) to prevent errors on pages where specific elements weren’t present. Managing event listeners for dynamic elements such as collapsible sections and theme buttons also required careful handling." },
-  { title: "How did you test and debug your JavaScript code?", content: "I tested the code by opening each page in the browser and checking whether the navigation loaded automatically, the theme toggle worked, and form validation behaved correctly. I used the browser’s Developer Tools Console to monitor for any JavaScript errors, used console.log() statements for debugging logic, and refreshed pages after each update to confirm that DOM manipulations were happening correctly. This helped me identify missing element IDs or syntax issues quickly." }
-];
-// Card rendering (Lab-2, Lab-3)
-function createSubCard({ title, content }, idx, labKey) {
-  return `
-    <div class="sub-card" id="${labKey}-sub-card-${idx}">
-      <div class="sub-card-header" tabindex="0">
-        <span>${title}</span>
-        <span class="toggle-icon">+</span>
-      </div>
-      <div class="sub-card-content" id="${labKey}-sub-card-content-${idx}">
-        <div>${content}</div>
-      </div>
-    </div>
-  `;
-}
-function createLabCard(cardTitle, dataArr, labKey) {
-  return `
-    <div class="lab-card" id="${labKey}-main-card">
-      <div class="card-header" tabindex="0">
-        <span>${cardTitle}</span>
-        <span class="toggle-icon">+</span>
-      </div>
-      <div class="card-content" id="${labKey}-main-content">
-        ${dataArr.map((j, i) => createSubCard(j, i, labKey)).join("")}
-      </div>
-    </div>
-  `;
-}
-function renderJournalCards() {
-  const container = document.getElementById('lab2-card-container');
-  if (!container) return;
-  container.innerHTML =
-    createLabCard("Lab-2: FRONTEND FUNDAMENTALS", lab2Journals, "lab2") +
-    createLabCard("Lab-3: JAVASCRIPT & DOM MANIPULATION", lab3Journals, "lab3");
-  ["lab2", "lab3"].forEach(labKey => {
-    const mainHeader = document.querySelector(`#${labKey}-main-card .card-header`);
-    const mainContent = document.getElementById(`${labKey}-main-content`);
-    const mainToggleIcon = mainHeader.querySelector('.toggle-icon');
-    mainHeader.addEventListener('click', () => {
-      mainContent.classList.toggle('open');
-      mainToggleIcon.textContent = mainContent.classList.contains('open') ? "−" : "+";
-    });
-    mainHeader.addEventListener('keydown', e => { if (e.key === "Enter" || e.key === " ") mainHeader.click(); });
-    (labKey === "lab2" ? lab2Journals : lab3Journals).forEach((_, idx) => {
-      const subHeader = document.querySelector(`#${labKey}-sub-card-${idx} .sub-card-header`);
-      const subContent = document.getElementById(`${labKey}-sub-card-content-${idx}`);
-      const subToggleIcon = subHeader.querySelector('.toggle-icon');
-      subHeader.addEventListener('click', () => {
-        subContent.classList.toggle('open');
-        subToggleIcon.textContent = subContent.classList.contains('open') ? "−" : "+";
-      });
-      subHeader.addEventListener('keydown', e => { if (e.key === "Enter" || e.key === " ") subHeader.click(); });
-    });
-  });
-}
-if (window.location.pathname.endsWith("journal.html")) renderJournalCards();
-// Dynamic add/remove custom cards (journal.html)
-const form = document.getElementById('card-create-form');
-const mainTitleInput = document.getElementById('main-card-title');
-const subQ = document.getElementById('sub-question');
-const subA = document.getElementById('sub-answer');
-const addSubBtn = document.getElementById('add-subcard-btn');
-const subPreview = document.getElementById('subcards-preview');
-const formMsg = document.getElementById('form-msg');
-let customCards = JSON.parse(localStorage.getItem('customLabCards') || '[]');
-let pendingQAs = [];
-if (addSubBtn) {
-  addSubBtn.addEventListener('click', () => {
-    if (!subQ.value.trim() || !subA.value.trim()) {
-      formMsg.textContent = "Question and answer cannot be empty!";
-      formMsg.style.color = 'red'; return;
-    }
-    pendingQAs.push({ question: subQ.value.trim(), answer: subA.value.trim() });
-    subQ.value = ""; subA.value = ""; formMsg.textContent = "";
-    renderPendingSubPreview();
-  });
-}
-function renderPendingSubPreview() {
-  subPreview.innerHTML = pendingQAs
-    .map((qa, i) => `
-      <div class="preview-sub">
-        <b>${qa.question}</b>
-        <button class="remove-sub-btn" data-i="${i}">Remove</button>
-      </div>
-    `).join('');
-  document.querySelectorAll('.remove-sub-btn').forEach(btn => {
-    btn.onclick = function () {
-      pendingQAs.splice(btn.getAttribute('data-i'), 1);
-      renderPendingSubPreview();
-    }
-  });
-}
-if (form) {
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (!mainTitleInput.value.trim()) {
-      formMsg.textContent = "Main card title required!";
-      formMsg.style.color = 'red'; return;
-    }
-    if (!pendingQAs.length) {
-      formMsg.textContent = "Add at least one Q&A to your card!";
-      formMsg.style.color = 'red'; return;
-    }
-    customCards.push({
-      title: mainTitleInput.value.trim(),
-      subQAs: JSON.parse(JSON.stringify(pendingQAs))
-    });
-    localStorage.setItem('customLabCards', JSON.stringify(customCards));
-    mainTitleInput.value = ''; pendingQAs = [];
-    renderPendingSubPreview(); renderCustomCards();
-    formMsg.textContent = "Card added successfully!";
-    formMsg.style.color = 'green';
-    setTimeout(() => { formMsg.textContent = ""; }, 1200);
-  });
-}
-function renderCustomCards() {
-  const container = document.getElementById('custom-cards-container');
-  if (!container) return;
-  customCards = JSON.parse(localStorage.getItem('customLabCards') || '[]');
-  container.innerHTML = customCards.map((card, idx) => `
-    <div class="lab-card">
-      <div class="card-header" tabindex="0">
-        <span>${card.title}</span>
-        <span class="toggle-icon">+</span>
-      </div>
-      <div class="card-content" id="custom-main-content-${idx}">
-        ${card.subQAs.map((qa, si) => `
-          <div class="sub-card">
-            <div class="sub-card-header" tabindex="0">
-              <span>${qa.question}</span>
-              <span class="toggle-icon">+</span>
-            </div>
-            <div class="sub-card-content" id="custom-${idx}-sub-${si}">
-              <div>${qa.answer}</div>
-            </div>
-          </div>
-        `).join('')}
-        <button class="delete-main-card-btn" data-i="${idx}">Delete Card</button>
-      </div>
-    </div>
-  `).join('');
+let currentVideoIndex = 0;
 
-  // Expand/collapse main and sub card logic -- safe checks
-  Array.from(container.children).forEach((labCardEl, idx) => {
-    const cardHeader = labCardEl.querySelector('.card-header');
-    const mainContent = labCardEl.querySelector('.card-content');
-    const toggleIcon = cardHeader ? cardHeader.querySelector('.toggle-icon') : null;
-    if (cardHeader && mainContent && toggleIcon) {
-      cardHeader.addEventListener('click', () => {
-        mainContent.classList.toggle('open');
-        toggleIcon.textContent = mainContent.classList.contains('open') ? "−" : "+";
-      });
-      cardHeader.addEventListener('keydown', e => {
-        if (e.key === "Enter" || e.key === " ") cardHeader.click();
-      });
-    }
-    // sub-card expand/collapse
-    Array.from(mainContent.querySelectorAll('.sub-card')).forEach((subCardEl, si) => {
-      const subHeader = subCardEl.querySelector('.sub-card-header');
-      const subContent = subCardEl.querySelector('.sub-card-content');
-      const subIcon = subHeader ? subHeader.querySelector('.toggle-icon') : null;
-      if (subHeader && subContent && subIcon) {
-        subHeader.addEventListener('click', () => {
-          subContent.classList.toggle('open');
-          subIcon.textContent = subContent.classList.contains('open') ? "−" : "+";
-        });
-        subHeader.addEventListener('keydown', e => { if (e.key === "Enter" || e.key === " ") subHeader.click(); });
-      }
-    });
-    // Delete button per card (must be within the current labCardEl!)
-    const deleteBtn = mainContent.querySelector('.delete-main-card-btn');
-    if (deleteBtn) {
-      deleteBtn.onclick = function () {
-        customCards.splice(idx, 1);
-        localStorage.setItem('customLabCards', JSON.stringify(customCards));
-        renderCustomCards();
-      };
-    }
-  });
-}
-
-if (window.location.pathname.endsWith("journal.html")) { renderCustomCards(); renderPendingSubPreview(); }
-const showFormBtn = document.getElementById('show-form-btn');
-const hideFormBtn = document.getElementById('hide-form-btn');
-const formArea = document.getElementById('form-area');
-if (showFormBtn && formArea) {
-  showFormBtn.addEventListener('click', () => {
-    formArea.style.display = 'block';
-    showFormBtn.style.display = 'none';
-  });
-}
-if (hideFormBtn && formArea && showFormBtn) {
-  hideFormBtn.addEventListener('click', () => {
-    formArea.style.display = 'none';
-    showFormBtn.style.display = '';
-  });
-}
-async function loadJsonReflections() {
-  const response = await fetch('backend/reflections.json');
-  if (!response.ok) return;
-  const entries = await response.json();
-  const container = document.getElementById('json-reflections');
-  if (!container) return;
-  if (!entries.length) {
-    container.innerHTML = "<p>No backend reflections yet.</p>";
-    return;
+/**
+ * MANDATORY GLOBAL FUNCTION: Called by the YouTube IFrame API when it is ready.
+ */
+window.onYouTubeIframeAPIReady = function () {
+  // Only attempt to initialize the player if the container element exists (i.e., on the projects page)
+  if (document.getElementById('youtube-player')) {
+    initializeYouTubePlayer();
   }
-  container.innerHTML = entries.map(e => `
-    <div class="lab-card">
-      <div class="card-header" tabindex="0">
-        <span>${e.date}</span>
-      </div>
-      <div class="card-content open">
-        <div>${e.text}</div>
-      </div>
-    </div>
-  `).join('');
 }
-if (document.getElementById('json-reflections')) loadJsonReflections();
-const exportBtn = document.getElementById('export-json-btn');
-if (exportBtn) {
-  exportBtn.onclick = async () => {
-    const resp = await fetch('backend/reflections.json');
-    if (!resp.ok) return;
-    const data = await resp.text();
-    const blob = new Blob([data], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "reflections.json";
-    a.click();
-    URL.revokeObjectURL(url);
+
+function initializeYouTubePlayer() {
+  console.log("Attempting to initialize YouTube Player...");
+  player = new YT.Player('youtube-player', {
+    videoId: videoIds[currentVideoIndex],
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+function onPlayerReady(event) {
+  console.log("YouTube Player is ready.");
+  const playBtn = document.getElementById('play-btn');
+  const pauseBtn = document.getElementById('pause-btn');
+  const nextBtn = document.getElementById('next-btn');
+
+  if (playBtn) playBtn.addEventListener('click', playVideo);
+  if (pauseBtn) pauseBtn.addEventListener('click', pauseVideo);
+  if (nextBtn) nextBtn.addEventListener('click', loadNextVideo);
+
+  updateVideoInfo();
+}
+
+function onPlayerStateChange(event) {
+  if (event.data == YT.PlayerState.ENDED) {
+    loadNextVideo();
+  } else if (event.data == YT.PlayerState.PLAYING) {
+    updateVideoInfo();
+  }
+}
+
+function playVideo() {
+  if (player && player.playVideo) player.playVideo();
+}
+
+function pauseVideo() {
+  if (player && player.pauseVideo) player.pauseVideo();
+}
+
+function updateVideoInfo() {
+  const videoInfoElement = document.getElementById('current-video-info');
+  if (!videoInfoElement) return;
+
+  setTimeout(() => {
+    if (player && player.getVideoData) {
+      const data = player.getVideoData();
+      if (data && data.title) {
+        videoInfoElement.textContent = `Now Playing: ${data.title}`;
+      } else {
+        videoInfoElement.textContent = `Video Loaded (ID: ${videoIds[currentVideoIndex]})`;
+      }
+    }
+  }, 500);
+}
+
+function loadNextVideo() {
+  currentVideoIndex = (currentVideoIndex + 1) % videoIds.length;
+  const nextVideoId = videoIds[currentVideoIndex];
+
+  const videoInfoElement = document.getElementById('current-video-info');
+  if (videoInfoElement) videoInfoElement.textContent = `Loading next video...`;
+
+  if (player && player.loadVideoById) {
+    player.loadVideoById(nextVideoId);
+  }
+}
+
+
+// --- Main Application Logic (Runs after DOM is loaded) ---
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. **CRITICAL FIX**: Define currentPage immediately inside DOMContentLoaded
+  const path = window.location.pathname;
+  const currentPage = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+
+  // Global Constants
+  const USER_JOURNAL_KEY = 'userJournalCards';
+
+  // --- Data Definitions ---
+
+  const staticJournalData = [
+    // ... (Static Lab 2 & 3 Data)
+    {
+      id: 'static-lab2',
+      title: "Lab-2: HTML & CSS Fundamentals",
+      entries: [
+        {
+          question: "How did you approach mobile-first design?",
+          answer: "I started by designing the layout for mobile size screens first, ensuring that all text, navigation, and content were readable and well spaced on a mobile device. Once the mobile version looked clean, I used CSS media queries to gradually enhance the layout for tablets and desktops."
+        },
+        {
+          question: "What was the most useful HTML or CSS concept you applied this week?",
+          answer: "The most useful concept was Flexbox and media queries, which made it easy to align navigation links and structure content sections responsively. Also shared CSS is very useful because all CSS can handle in single file."
+        },
+        {
+          question: "What part of HTML or CSS did you find most challenging or confusing?",
+          answer: "Most challenging part of CSS is to handle alignment and spacing for all elements. Otherwise for HTML it is looking easier."
+        }
+      ]
+    },
+    {
+      id: 'static-lab3',
+      title: "Lab-3: JavaScript & DOM Manipulation",
+      entries: [
+        {
+          question: "Which DOM selection methods did you use, and why did you choose them?",
+          answer: "I used several DOM selection methods, including getElementById() and querySelectorAll(). getElementById() was used when I needed to target specific elements like the navigation container (nav-container), the journal form (journal-form), and buttons such as the theme toggle (theme-btn), because it directly selects a unique element and is efficient. and querySelectorAll() was used to apply logic to multiple elements, like highlighting the active navigation link, since it allows selecting multiple items using CSS selectors and iterating through them easily."
+        },
+        {
+          question: "What was the most challenging part about linking JavaScript with your HTML?",
+          answer: "The most challenging part was ensuring that the JavaScript file loaded correctly on all pages and that elements existed in the DOM before running certain functions. Since the same script is reused across multiple pages, I had to use conditional checks (like if (navContainer) { ... }) to prevent errors on pages where specific elements weren’t present. Managing event listeners for dynamic elements such as collapsible sections and theme buttons also required careful handling."
+        },
+        {
+          question: "How did you test and debug your JavaScript code?",
+          answer: "I tested the code by opening each page in the browser and checking whether the navigation loaded automatically, the theme toggle worked, and form validation behaved correctly. I used the browser’s Developer Tools Console to monitor for any JavaScript errors, used console.log() statements for debugging logic, and refreshed pages after each update to confirm that DOM manipulations were happening correctly."
+        }
+      ]
+    }
+  ];
+
+  const projectData = [
+    {
+      title: "Responsive Learning Journal PWA",
+      description: "A Progressive Web Application (PWA) built using HTML, CSS, and JavaScript. It features a responsive layout, theme switching (light/dark mode), dynamic navigation generation, real-time date/time updates, and utilizes Local Storage for persistent data management (the journal cards).",
+      status: "In Progress",
+      tags: ["HTML5", "CSS3", "JavaScript", "Local Storage"]
+    },
+    {
+      title: "Simple Task Manager (Future Feature)",
+      description: "A fast and accurate temperature conversion tool designed to easily switch between Celsius, Fahrenheit values.",
+      status: "Planned",
+      tags: ["JavaScript", "UI/UX", "Android"]
+    },
+    {
+      title: "Temperature Converter",
+      description: "A planned expansion to the PWA, this manager will allow users to add, delete, and mark tasks as complete. It will involve complex DOM manipulation and data structuring within Local Storage to handle task lists and status updates.",
+      status: "Completed",
+      tags: ["JavaScript", "UI/UX", "Data Structures", "Future"]
+    }
+  ];
+
+  // Define all navigation items with their filenames - **UPDATED**
+  const navItems = [
+    { name: 'Home', file: 'index.html' },
+    { name: 'Journal', file: 'journal.html' },
+    { name: 'Projects', file: 'projects.html' },
+    { name: 'Reflections', file: 'reflections.html' }, // <-- New Page
+    { name: 'About', file: 'about.html' }
+  ];
+
+  // --- Local Storage Handlers (Journal) ---
+  const loadUserCards = () => {
+    try {
+      const storedCards = localStorage.getItem(USER_JOURNAL_KEY);
+      return storedCards ? JSON.parse(storedCards) : [];
+    } catch (e) {
+      console.error("Error loading user journal cards:", e);
+      return [];
+    }
   };
-}
+
+  const saveUserCards = (cards) => {
+    try {
+      localStorage.setItem(USER_JOURNAL_KEY, JSON.stringify(cards));
+    } catch (e) {
+      console.error("Error saving user journal cards:", e);
+    }
+  };
+
+
+  // --- Shared Utility Functions (Navbar, Theme, Footer) ---
+
+  const navbarContainer = document.getElementById('navbar-container');
+
+  // Generate List Items with 'active' class check
+  const navLinksHTML = navItems.map(item => {
+    const isActive = (item.file === currentPage);
+
+    return `
+            <li class="${isActive ? 'active' : ''}">
+                <a href="${item.file}">${item.name}</a>
+            </li>
+        `;
+  }).join('');
+
+  // Generate Navbar HTML
+  const navbarHTML = `
+        <nav class="navbar">
+            <div class="navbar-left">
+                <div class="logo">
+                    <img src='images/logo.svg' width='30px'>
+                </div>
+                
+                <ul class="nav-links" id="nav-menu">
+                    ${navLinksHTML}
+                </ul>
+            </div>
+            
+            <button class="theme-switch" aria-label="Toggle theme" id="desktop-theme-toggle">
+                ☀️ 
+            </button>
+            
+            <div class="navbar-right-mobile">
+                <button class="theme-switch" aria-label="Toggle theme" id="mobile-theme-toggle">
+                    ☀️
+                </button>
+                <button class="menu-button" aria-label="Toggle navigation" id="menu-toggle">
+                    &#9776; 
+                </button>
+            </div>
+        </nav>
+    `;
+
+  if (navbarContainer) {
+    navbarContainer.innerHTML = navbarHTML;
+  }
+
+  // Mobile Menu Toggle Functionality
+  const menuToggle = document.getElementById('menu-toggle');
+  const navMenu = document.getElementById('nav-menu');
+
+  if (menuToggle && navMenu) {
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+  }
+
+  // Dark/Light Theme Switch Functionality
+  const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+  const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+  const body = document.body;
+
+  const themeSwitchHandler = () => {
+    body.classList.toggle('dark-theme');
+    const isDark = body.classList.contains('dark-theme');
+    const icon = isDark ? '🌙' : '☀️';
+
+    if (desktopThemeToggle) desktopThemeToggle.innerHTML = icon;
+    if (mobileThemeToggle) mobileThemeToggle.innerHTML = icon;
+
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  };
+
+  if (desktopThemeToggle || mobileThemeToggle) {
+    if (desktopThemeToggle) desktopThemeToggle.addEventListener('click', themeSwitchHandler);
+    if (mobileThemeToggle) mobileThemeToggle.addEventListener('click', themeSwitchHandler);
+
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') {
+      body.classList.add('dark-theme');
+      const icon = '🌙';
+      if (desktopThemeToggle) desktopThemeToggle.innerHTML = icon;
+      if (mobileThemeToggle) mobileThemeToggle.innerHTML = icon;
+    }
+  }
+
+  // Live Date and Time Functionality
+  const footerElement = document.getElementById('app-footer');
+
+  function updateDateTime() {
+    const now = new Date();
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+
+    const formattedDate = now.toLocaleDateString(undefined, dateOptions);
+    const formattedTime = now.toLocaleTimeString(undefined, timeOptions);
+
+    if (footerElement) {
+      footerElement.innerHTML = `&copy; ${now.getFullYear()} Learning Journal PWA | ${formattedDate} | ${formattedTime}`;
+    }
+  }
+
+  updateDateTime();
+  setInterval(updateDateTime, 1000);
+
+  // --- PAGE SPECIFIC LOGIC BLOCKS ---
+
+  // JOURNAL PAGE LOGIC
+  if (currentPage === 'journal.html') {
+    const journalArea = document.getElementById('journal-entries-area');
+    const journalContentContainer = document.querySelector('.journal-content-container');
+
+    const attachToggleListeners = () => {
+      document.querySelectorAll('.collapsible-header').forEach(header => {
+        header.onclick = null;
+        header.addEventListener('click', () => {
+          const content = header.nextElementSibling;
+          const isActive = header.classList.toggle('active');
+
+          document.querySelectorAll('.collapsible-content.show').forEach(openContent => {
+            if (openContent !== content) {
+              openContent.classList.remove('show');
+              openContent.style.maxHeight = '0';
+              openContent.previousElementSibling.classList.remove('active');
+              openContent.previousElementSibling.setAttribute('aria-expanded', 'false');
+            }
+          });
+
+          if (isActive) {
+            content.classList.add('show');
+            content.style.maxHeight = content.scrollHeight + "px";
+            header.setAttribute('aria-expanded', 'true');
+          } else {
+            content.classList.remove('show');
+            content.style.maxHeight = '0';
+            header.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+      attachDeleteListeners();
+    };
+
+    const renderEntryFields = (entries = [{ question: '', answer: '' }]) => {
+      const container = document.getElementById('form-entries-container');
+      if (!container) return;
+
+      container.innerHTML = entries.map((entry, index) => `
+                <div class="form-entry-item" data-id="${index}">
+                    <label for="q-${index}">Question:</label>
+                    <input type="text" id="q-${index}" name="question" value="${entry.question}" required>
+                    
+                    <label for="a-${index}">Answer:</label>
+                    <textarea id="a-${index}" name="answer" rows="3" required>${entry.answer}</textarea>
+                    
+                    ${index > 0 ? `<button type="button" class="remove-entry-btn">Remove Entry</button>` : ''}
+                </div>
+            `).join('');
+
+      document.querySelectorAll('.remove-entry-btn').forEach(btn => {
+        btn.onclick = null;
+        btn.addEventListener('click', (e) => {
+          e.target.closest('.form-entry-item').remove();
+        });
+      });
+    };
+
+    const renderJournalContent = () => {
+      let userCards = loadUserCards();
+      const allCards = staticJournalData.concat(userCards);
+
+      let contentHTML = '';
+
+      allCards.forEach((card) => {
+        const isUserCard = !String(card.id).startsWith('static-');
+
+        let labContent = card.entries.map((entry) => {
+          return `
+                        <div class="journal-card">
+                            <button class="collapsible-header" aria-expanded="false">
+                                <span>${entry.question}</span>
+                                <span class="icon">&#9660;</span>
+                            </button>
+                            <div class="collapsible-content">
+                                <p>${entry.answer}</p>
+                            </div>
+                        </div>
+                    `;
+        }).join('');
+
+        const deleteButton = isUserCard ?
+          `<button class="delete-card-btn" title="Delete Card">🗑️ Delete</button>` : '';
+
+        contentHTML += `
+                    <div class="lab-container" data-card-id="${card.id}">
+                        <div class="lab-header-wrapper">
+                            <h2>${card.title}</h2>
+                            ${deleteButton}
+                        </div>
+                        ${labContent}
+                    </div>
+                `;
+      });
+
+      contentHTML += `<button id="add-card-btn" class="add-card-button">+ Add New Journal Entry</button>`;
+
+      journalArea.innerHTML = contentHTML;
+      attachToggleListeners();
+      attachFormHandler();
+    };
+
+    const deleteUserCard = (cardId) => {
+      let userCards = loadUserCards();
+      const initialLength = userCards.length;
+
+      userCards = userCards.filter(card => card.id !== cardId);
+
+      if (userCards.length < initialLength) {
+        saveUserCards(userCards);
+        renderJournalContent();
+      }
+    };
+
+    const attachDeleteListeners = () => {
+      document.querySelectorAll('.delete-card-btn').forEach(button => {
+        button.onclick = null;
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const cardId = button.closest('.lab-container').dataset.cardId;
+
+          if (cardId) {
+            // NOTE: Replacing confirm() with a basic UI message as per instructions
+            if (window.confirm(`Are you sure you want to delete the card titled: "${button.closest('.lab-container').querySelector('h2').textContent}"?`)) {
+              deleteUserCard(cardId);
+            }
+          }
+        });
+      });
+    };
+
+    const handleFormSubmit = (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('main-title').value.trim();
+      const entriesRaw = document.querySelectorAll('.form-entry-item');
+      const entries = [];
+
+      entriesRaw.forEach(item => {
+        const question = item.querySelector('input[name="question"]').value.trim();
+        const answer = item.querySelector('textarea[name="answer"]').value.trim();
+        if (question && answer) {
+          entries.push({ question, answer });
+        }
+      });
+
+      if (title && entries.length > 0) {
+        const newCard = {
+          id: crypto.randomUUID(),
+          title: title,
+          entries: entries
+        };
+
+        let userCards = loadUserCards();
+        userCards.push(newCard);
+        saveUserCards(userCards);
+
+        // Assuming the modal is removed via a class or ID
+        document.getElementById('new-card-form-modal')?.remove();
+
+        renderJournalContent();
+      } else {
+        console.error("Please ensure the main title and at least one Q&A entry are filled out.");
+      }
+    };
+
+    const attachFormHandler = () => {
+      const addCardBtn = document.getElementById('add-card-btn');
+
+      if (addCardBtn) {
+        addCardBtn.onclick = null;
+        addCardBtn.addEventListener('click', () => {
+          if (document.getElementById('new-card-form-modal')) return;
+
+          journalContentContainer.insertAdjacentHTML('afterend', `
+                        <div id="new-card-form-modal" class="modal-overlay">
+                            <form id="new-card-form" class="card-form">
+                                <h3>Add New Journal Card</h3>
+                                <label for="main-title">Main Card Title (e.g., Lab-4, Week 5 Summary):</label>
+                                <input type="text" id="main-title" required>
+                                
+                                <h4>Q&A Entries</h4>
+                                <div id="form-entries-container">
+                                    <!-- Entries inserted here -->
+                                </div>
+                                
+                                <button type="button" id="add-entry-btn" class="add-card-button">+ Add Q&A Entry</button>
+                                
+                                <div class="form-actions">
+                                    <button type="submit" class="submit-button">Submit Card</button>
+                                    <button type="button" id="cancel-form-btn" class="cancel-button">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    `);
+
+          renderEntryFields();
+
+          const modal = document.getElementById('new-card-form-modal');
+          const form = document.getElementById('new-card-form');
+          const addEntryBtn = document.getElementById('add-entry-btn');
+          const cancelBtn = document.getElementById('cancel-form-btn');
+
+          addEntryBtn.addEventListener('click', () => {
+            renderEntryFields([...document.querySelectorAll('.form-entry-item')].map(item => ({
+              question: item.querySelector('input[name="question"]').value,
+              answer: item.querySelector('textarea[name="answer"]').value
+            })).concat([{ question: '', answer: '' }]));
+          });
+
+          cancelBtn.addEventListener('click', () => {
+            modal.remove();
+          });
+
+          form.addEventListener('submit', handleFormSubmit);
+        });
+      }
+    };
+
+    renderJournalContent();
+  }
+
+  // PROJECTS PAGE LOGIC
+  if (currentPage === 'projects.html') {
+    const projectsArea = document.getElementById('projects-area');
+
+    const renderProjectContent = () => {
+      let projectsHTML = projectData.map(project => {
+        const tagBadges = project.tags.map(tag => `<span class="project-tag">${tag}</span>`).join('');
+
+        let statusClass = '';
+        if (project.status === 'Completed') statusClass = 'status-complete';
+        else if (project.status === 'In Progress') statusClass = 'status-progress';
+        else statusClass = 'status-planned';
+
+        return `
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>${project.title}</h3>
+                            <span class="project-status ${statusClass}">${project.status}</span>
+                        </div>
+                        <p class="project-description">${project.description}</p>
+                        <div class="project-tags">
+                            ${tagBadges}
+                        </div>
+                    </div>
+                `;
+      }).join('');
+
+      if (projectsArea) {
+        projectsArea.innerHTML = projectsHTML;
+      }
+    };
+
+    renderProjectContent();
+  }
+
+  // REFLECTIONS PAGE LOGIC
+  if (currentPage === 'reflections.html') {
+    const reflectionsList = document.getElementById('reflections-list');
+    const loadingStatus = document.getElementById('loading-status');
+    const exportBtn = document.getElementById('export-json-btn');
+
+    const displayStatus = (message, isError = false) => {
+      reflectionsList.innerHTML = `<div class="no-reflections-message">${isError ? 'Error: ' : ''}${message}</div>`;
+    };
+
+    const fetchReflections = async () => {
+      loadingStatus.textContent = 'Fetching reflections...';
+      try {
+        // Fetch the reflections.json file from the same directory
+        const response = await fetch('backend/reflections.json');
+
+        if (!response.ok) {
+          // Check if the file is not found (404) or empty/unreadable
+          if (response.status === 404) {
+            displayStatus("Reflections file not found. Ensure 'reflections.json' is in the root directory.");
+            return;
+          }
+          // Attempt to read as text to debug non-JSON responses
+          const text = await response.text();
+          if (text.trim() === '[]' || text.trim() === '') {
+            displayStatus("No reflections found. Use the Python script (save_entry.py) to add entries.");
+            return;
+          }
+          throw new Error(`HTTP error! Status: ${response.status}. Response: ${text.substring(0, 50)}...`);
+        }
+
+        const reflections = await response.json();
+
+        if (reflections.length === 0) {
+          displayStatus("No reflections found. Use the Python script (save_entry.py) to add entries.");
+          return;
+        }
+
+        reflections.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        reflectionsList.innerHTML = reflections.map(entry => {
+          // Use UTC timestamp for robustness
+          const date = new Date(entry.timestamp);
+          const formattedDate = date.toLocaleString();
+          return `
+                        <div class="reflection-card">
+                            <h4>${formattedDate}</h4>
+                            <p>${entry.reflection}</p>
+                        </div>
+                    `;
+        }).join('');
+
+      } catch (error) {
+        console.error("Failed to load reflections:", error);
+        displayStatus(`Could not load reflections. Ensure 'reflections.json' is properly formatted JSON. Details: ${error.message}`, true);
+      }
+    };
+
+    const exportReflections = () => {
+      fetch('backend/reflections.json')
+        .then(response => response.json())
+        .then(data => {
+          const jsonString = JSON.stringify(data, null, 2);
+          const blob = new Blob([jsonString], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'reflections_export.json';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+          console.error("Export failed:", error);
+          const statusMessage = document.createElement('div');
+          statusMessage.textContent = 'Export failed. Check console for details.';
+          statusMessage.style.cssText = 'position: fixed; top: 10px; right: 10px; background: #f44336; color: white; padding: 10px; border-radius: 5px; z-index: 1001;';
+          document.body.appendChild(statusMessage);
+          setTimeout(() => statusMessage.remove(), 3000);
+        });
+    };
+
+    fetchReflections();
+    if (exportBtn) {
+      exportBtn.addEventListener('click', exportReflections);
+    }
+  }
+});

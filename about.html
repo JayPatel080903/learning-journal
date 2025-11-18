@@ -3,34 +3,59 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Learning Journal - About</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Jay - Learning Journal PWA</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
-    <div id="nav-container"></div>
+<body class="light-theme">
+    <header id="navbar-container"></header>
+
     <main>
-        <!-- <div class="profile-card"> -->
-        <div class="profile-img-section">
-            <img src="images/profile.jpg" alt="Jay Rajendrakumar Patel" class="profile-img" />
-            <div>
-                <p class="name">Jay Rajendrakumar Patel</p>
-                <p>Ahmedabad, Gujarat, India</p>
-            </div>
+        <div class="about-container">
+            <header class="profile-header">
+                <img src="images/profile.jpg" alt="Jay Rajendrakumar Patel Profile Picture" class="profile-pic"
+                    onerror="this.onerror=null" />
+
+                <h1 class="name-title">Jay Rajendrakumar Patel</h1>
+                <p class="location">Ahmedabad, Gujarat, India</p>
+            </header>
+
+            <section class="bio-section">
+                <h2>A Bit About Me</h2>
+
+                <p>
+                    I am currently pursuing my **Bachelor’s degree in Computer Science** at the University for the
+                    Creative Arts. My academic journey is fueled by a deep-seated passion for **technology** and, more
+                    specifically, a strong interest in **web development**. I believe in creating innovative,
+                    functional, and user-friendly digital experiences.
+                </p>
+
+                <h3>My Journey & Interests</h3>
+                <p>
+                    When I'm not focused on coursework or coding projects, I enjoy the continuous process of **learning
+                    new programming languages** and diving into a good book. This commitment to continuous learning is
+                    central to my professional aspirations.
+                </p>
+
+                <p>
+                    My ultimate professional goal is to become a skilled **Software Engineer** where I can contribute
+                    meaningfully to innovative, challenging, and collaborative projects that push the boundaries of
+                    technology.
+                </p>
+
+                <h3>Key Skills & Focus</h3>
+                <ul>
+                    <li>Computer Science Principles</li>
+                    <li>Front-End Web Development (Strong Interest)</li>
+                    <li>Continuous Learning & Reading</li>
+                    <li>Innovative Project Contribution</li>
+                </ul>
+            </section>
         </div>
-        <div class="profile-info">
-            <h2>About Me</h2>
-            <p>I’m currently pursuing my Bachelor’s degree in Computer Science at University for the Creative Arts.
-            </p>
-            <p>I’m passionate about technology and have a strong interest in web development.</p>
-            <p>In my free time, I enjoy reading and learning new programming languages.</p>
-            <p>My goal is to become a skilled software engineer and contribute to innovative projects.</p>
-        </div>
-        <!-- </div> -->
     </main>
-    <footer>
-        <span id="footer-date"></span>
-    </footer>
+    <footer id="app-footer"></footer>
+
     <script src="js/script.js"></script>
 </body>
 
