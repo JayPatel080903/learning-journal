@@ -1,24 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Journal PWA</title>
+    <title>Learning Journal - Home</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="light-theme">
-    <header id="navbar-container"></header>
+<body>
+    <div id="nav-container"></div>
 
-    <main>
-        <div class="welcome-message">
-            <h2>Hey, I am Jay Patel!</h2>
-            <p>Welcoming you in my Learning Journal.</p>
-            <p>You will find my progress here.</p>
-        </div>
+    <main class="page page-home">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="gradient-text hero-title animate-fade-up">
+                    Welcome to Jay Patel’s Learning Journal
+                </h1>
+                <p class="hero-subtitle animate-fade-up-delay">
+                    Capture my ideas, track my progress, and reflect on my journey — all in one beautifully animated,
+                    gradient-themed space.
+                </p>
+                <div class="hero-actions animate-fade-up-delay-2">
+                    <a href="journal.html" class="btn primary-btn">
+                        Go to Journal
+                    </a>
+                    <a href="project.html" class="btn ghost-btn">
+                        View Projects
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-side animate-float">
+                <div class="glass-card datetime-card">
+                    <h2 class="gradient-text small-title">Current Date &amp; Time</h2>
+                    <ul class="datetime-display">
+                        <span id="live-date" class="datetime-line gradient-text"></span>
+                        <span id="live-time" class="datetime-line gradient-text"></span>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="feature-grid">
+            <article class="feature-card animate-card">
+                <h3 class="gradient-text small-title">Journal</h3>
+                <p>Write detailed reflections with questions and answers, track my labs, and see how my understanding
+                    grows over time.</p>
+            </article>
+            <article class="feature-card animate-card">
+                <h3 class="gradient-text small-title">Projects</h3>
+                <p>Explore my current work, planned ideas, and completed applications such as the Learning Journal and
+                    utility apps.</p>
+            </article>
+            <article class="feature-card animate-card">
+                <h3 class="gradient-text small-title">About</h3>
+                <p>Learn more about who I am, my background, my skills, and what drives me to keep learning and building
+                    every day.</p>
+            </article>
+        </section>
     </main>
-    <footer id="app-footer"></footer>
 
     <script src="js/script.js"></script>
 </body>

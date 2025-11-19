@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Journal - Projects</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="nav-container"></div>
+
+    <main class="page page-project">
+        <section class="page-header">
+            <h1 class="gradient-text hero-title animate-fade-up">Projects</h1>
+            <p class="hero-subtitle animate-fade-up-delay">
+                A quick snapshot of the things I’m building and experimenting with.
+            </p>
+        </section>
+
+        <section class="project-grid">
+            <article class="project-card glass-card animate-card">
+                <h2 class="gradient-text small-title">Temperature Converter (PWA)</h2>
+                <p>
+                    A simple and fast temperature converter that lets me convert
+                    Celsius to Fahrenheit and Fahrenheit to Celsius instantly.
+                    Built as a progressive web app that I can open on any device.
+                </p>
+                <ul class="pill-row">
+                    <li class="pill">HTML</li>
+                    <li class="pill">CSS</li>
+                    <li class="pill">JavaScript</li>
+                </ul>
+                <span class="status-tag status-completed">Completed</span>
+                <a href="https://jaypatel080903.github.io/TemperatureConverterPWA/" class="btn ghost-btn small-btn"
+                    target="_blank" rel="noopener noreferrer">
+                    Open App
+                </a>
+            </article>
+
+            <article class="project-card glass-card animate-card">
+                <h2 class="gradient-text small-title">Learning Journal Website</h2>
+                <p>
+                    A multi-page responsive learning journal where I can add new entries
+                    about what I studied today, track progress, and reflect on my learning
+                    journey over time.
+                </p>
+                <ul class="pill-row">
+                    <li class="pill">HTML</li>
+                    <li class="pill">CSS</li>
+                    <li class="pill">JavaScript</li>
+                    <li class="pill">Python</li>
+                    <li class="pill">REST APIs</li>
+                </ul>
+                <span class="status-tag status-in-progress">In Progress</span>
+                <a href="index.html" class="btn ghost-btn small-btn">
+                    Go to Home Page
+                </a>
+            </article>
+
+            <article class="project-card glass-card animate-card">
+                <h2 class="gradient-text small-title">Mini Music Player</h2>
+                <p>
+                    A browser-based music player where I can play, pause, and switch tracks
+                    from a simple playlist, with a clean gradient UI and basic audio controls.
+                </p>
+                <ul class="pill-row">
+                    <li class="pill">Web Audio</li>
+                    <li class="pill">JavaScript</li>
+                    <li class="pill">UI/UX</li>
+                </ul>
+                <span class="status-tag status-planned">Planned</span>
+                <button class="btn ghost-btn small-btn" disabled>Coming Soon</button>
+            </article>
+
+            <article class="project-card glass-card animate-card">
+                <h2 class="gradient-text small-title">Library Management System</h2>
+                <p>
+                    A system to manage books, members, and issue/return records so I can
+                    keep track of what is available and who borrowed which book.
+                </p>
+                <ul class="pill-row">
+                    <li class="pill">Java</li>
+                    <li class="pill">Spring Boot</li>
+                    <li class="pill">MySQL</li>
+                </ul>
+                <span class="status-tag status-planned">Planned</span>
+                <button class="btn ghost-btn small-btn" disabled>Coming Soon</button>
+            </article>
+
+            <article class="project-card glass-card animate-card">
+                <h2 class="gradient-text small-title">City Temperature System</h2>
+                <p>
+                    A web tool where I can check temperatures for different cities and compare
+                    current conditions, using API data and a clean dashboard view.
+                </p>
+                <ul class="pill-row">
+                    <li class="pill">APIs</li>
+                    <li class="pill">JavaScript</li>
+                    <li class="pill">Dashboard</li>
+                </ul>
+                <span class="status-tag status-planned">Planned</span>
+                <button class="btn ghost-btn small-btn" disabled>Coming Soon</button>
+            </article>
+        </section>
+        <section class="video-lab glass-card animate-card">
+            <h2 class="gradient-text small-title">YouTube Video Tester</h2>
+            <p>
+                Paste any YouTube link and I can play, pause, and control the video directly
+                from this page.
+            </p>
+
+            <div class="video-input-row">
+                <input type="url" id="youtube-url-input" class="input youtube-input"
+                    placeholder="Paste YouTube link here (e.g. https://www.youtube.com/watch?v=...)" />
+                <button id="load-video-btn" class="btn primary-btn small-btn">
+                    Load Video
+                </button>
+            </div>
+
+            <div class="video-controls" id="video-controls" hidden>
+                <button id="play-video-btn" class="btn ghost-btn tiny-btn">Play</button>
+                <button id="pause-video-btn" class="btn ghost-btn tiny-btn">Pause</button>
+            </div>
+
+            <div class="video-frame-wrapper">
+                <div id="youtube-player"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

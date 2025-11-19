@@ -1,60 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Jay - Learning Journal PWA</title>
+    <title>Learning Journal - About</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="light-theme">
-    <header id="navbar-container"></header>
+<body>
+    <div id="nav-container"></div>
 
-    <main>
-        <div class="about-container">
-            <header class="profile-header">
-                <img src="images/profile.jpg" alt="Jay Rajendrakumar Patel Profile Picture" class="profile-pic"
-                    onerror="this.onerror=null" />
+    <main class="page page-about">
+        <section class="page-header">
+            <h1 class="gradient-text hero-title animate-fade-up">About</h1>
+            <p class="hero-subtitle animate-fade-up-delay">
+                A small space on the web to learn in public, experiment with UI, and document the journey.
+            </p>
+        </section>
 
-                <h1 class="name-title">Jay Rajendrakumar Patel</h1>
-                <p class="location">Ahmedabad, Gujarat, India</p>
-            </header>
+        <section class="about-layout">
 
-            <section class="bio-section">
-                <h2>A Bit About Me</h2>
+            <div class="about-card glass-card animate-card">
+
+                <img src="images/jay-profile.jpg" alt="Jay Patel Profile" class="profile-img">
+
+                <h2 class="gradient-text small-title">Hi, I’m Jay Rajendrakumar Patel</h2>
+
+                <p><strong>Ahmedabad, Gujarat, India</strong></p>
 
                 <p>
-                    I am currently pursuing my **Bachelor’s degree in Computer Science** at the University for the
-                    Creative Arts. My academic journey is fueled by a deep-seated passion for **technology** and, more
-                    specifically, a strong interest in **web development**. I believe in creating innovative,
-                    functional, and user-friendly digital experiences.
+                    I am currently pursuing my <strong>Bachelor’s degree in Computer Science</strong> at the University
+                    for
+                    the Creative Arts. My academic journey is fueled by a deep-seated passion for
+                    <strong>technology</strong>
+                    and, more specifically, a strong interest in <strong>web development</strong>. I believe in creating
+                    innovative, functional, and user-friendly digital experiences.
                 </p>
 
-                <h3>My Journey & Interests</h3>
-                <p>
-                    When I'm not focused on coursework or coding projects, I enjoy the continuous process of **learning
-                    new programming languages** and diving into a good book. This commitment to continuous learning is
-                    central to my professional aspirations.
-                </p>
+                <h3 class="gradient-text small-title">My Journey & Interests</h3>
 
                 <p>
-                    My ultimate professional goal is to become a skilled **Software Engineer** where I can contribute
+                    When I'm not focused on coursework or coding projects, I enjoy the continuous process of
+                    <strong>learning new programming languages</strong> and diving into a good book.
+                    This dedication to continuous learning plays a central role in my professional growth.
+                </p>
+            </div>
+
+            <div class="about-card glass-card animate-fade-up-delay-2">
+                <h2 class="gradient-text small-title">Tech & Tools</h2>
+                <ul class="pill-row">
+                    <li class="pill">HTML5</li>
+                    <li class="pill">CSS3</li>
+                    <li class="pill">JavaScript</li>
+                    <li class="pill">Responsive Design</li>
+                    <li class="pill">JAVA</li>
+                    <li class="pill">Python</li>
+                </ul>
+                <p>
+                    This site is built as a simple, multi-page front-end project with a shared navbar, gradient themes,
+                    and smooth animations — all using pure HTML, CSS, and JavaScript.
+                </p>
+
+                <h2 class="gradient-text small-title">Right now, I'm focusing on:</h2>
+                <ul class="focus-list">
+                    <li>Front-end development and responsive design</li>
+                    <li>Writing cleaner, more maintainable code</li>
+                    <li>Connecting UI with real-world APIs and data</li>
+                </ul>
+
+                <h2 class="gradient-text small-title">Goal</h2>
+                <p>
+                    My ultimate goal is to become a skilled <strong>Software Engineer</strong> where I can contribute
                     meaningfully to innovative, challenging, and collaborative projects that push the boundaries of
                     technology.
                 </p>
+            </div>
 
-                <h3>Key Skills & Focus</h3>
-                <ul>
-                    <li>Computer Science Principles</li>
-                    <li>Front-End Web Development (Strong Interest)</li>
-                    <li>Continuous Learning & Reading</li>
-                    <li>Innovative Project Contribution</li>
-                </ul>
-            </section>
-        </div>
+        </section>
+
     </main>
-    <footer id="app-footer"></footer>
 
     <script src="js/script.js"></script>
 </body>

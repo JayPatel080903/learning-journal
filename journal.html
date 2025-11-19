@@ -1,27 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journal - Learning Journal PWA</title>
+    <title>Learning Journal - Journal</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="light-theme">
-    <header id="navbar-container"></header>
+<body>
+    <div id="nav-container"></div>
 
-    <main>
-        <div class="journal-content-container">
-            <h1>My Learning Journal Entries</h1>
-            <!-- Content will be generated here by script.js -->
-            <div id="journal-entries-area">
-                <!-- Collapsible Labs will be inserted here -->
+    <main class="page page-journal">
+        <section class="page-header">
+            <h1 class="gradient-text hero-title animate-fade-up">Journal</h1>
+            <p class="hero-subtitle animate-fade-up-delay">
+                Reflect on what I learned, what I tried, and what I’ll do next.
+            </p>
+        </section>
+
+        <section class="journal-layout">
+            <div class="journal-form glass-card animate-card">
+                <h2 class="gradient-text small-title">New Entry</h2>
+                <form id="journal-form">
+                    <div class="form-group">
+                        <label for="journal-title">Title</label>
+                        <input id="journal-title" type="text" placeholder="Enter title..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="journal-date">Date</label>
+                        <input id="journal-date" type="date" required>
+                    </div>
+
+                    <div id="qa-container">
+                        <div class="qa-pair">
+                            <div class="form-group">
+                                <label>Question</label>
+                                <input type="text" class="qa-question" placeholder="Enter question">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Answer</label>
+                                <textarea class="qa-answer" rows="3" placeholder="Enter answer"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="add-qa" type="button" class="btn ghost-btn">+ Add More Question</button>
+
+                    <button id="save-entry" type="button" class="btn primary-btn">
+                        Save Card
+                    </button>
+                </form>
+
             </div>
-        </div>
-    </main>
 
-    <footer id="app-footer"></footer>
+            <div class="journal-list animate-fade-up-delay-2">
+                <h2 class="gradient-text small-title">Recent Entries</h2>
+                <div id="entries-container"></div>
+            </div>
+        </section>
+    </main>
 
     <script src="js/script.js"></script>
 </body>
