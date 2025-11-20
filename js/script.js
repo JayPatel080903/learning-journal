@@ -481,3 +481,22 @@ function injectFooter() {
 
   document.body.insertAdjacentHTML("beforeend", footerHTML);
 }
+
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  const installBtn = document.getElementById("install-btn");
+  if (installBtn) installBtn.style.display = "inline-flex";
+
+  installBtn.addEventListener("click", async () => {
+    installBtn.style.display = "none";
+    deferredPrompt.prompt();
+
+    const choice = await deferredPrompt.userChoice;
+    console.log("Install:", choice);
+    deferredPrompt = null;
+  });
+});

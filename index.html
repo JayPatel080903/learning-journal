@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Journal - Home</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("sw.js");
+        }
+    </script>
+
 </head>
 
 <body>
@@ -59,6 +66,10 @@
                     every day.</p>
             </article>
         </section>
+
+        <button id="install-btn" class="btn primary-btn" style="margin-top: 1rem; display:none;">
+            Install App
+        </button>
     </main>
 
     <script src="js/script.js"></script>
