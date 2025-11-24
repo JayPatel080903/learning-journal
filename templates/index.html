@@ -5,14 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Journal - Home</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+
     <script>
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("sw.js");
+            navigator.serviceWorker.register("{{ url_for('service_worker') }}");
         }
     </script>
-
 </head>
 
 <body>
@@ -29,10 +30,10 @@
                     gradient-themed space.
                 </p>
                 <div class="hero-actions animate-fade-up-delay-2">
-                    <a href="journal.html" class="btn primary-btn">
+                    <a href="{{ url_for('journal_page') }}" class="btn primary-btn">
                         Go to Journal
                     </a>
-                    <a href="project.html" class="btn ghost-btn">
+                    <a href="{{ url_for('project_page') }}" class="btn ghost-btn">
                         View Projects
                     </a>
                 </div>
@@ -72,7 +73,7 @@
         </button>
     </main>
 
-    <script src="js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 
 </html>

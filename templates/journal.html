@@ -5,14 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Journal - Journal</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+
     <script>
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("sw.js");
+            navigator.serviceWorker.register("{{ url_for('service_worker') }}");
         }
     </script>
-
 </head>
 
 <body>
@@ -60,7 +61,6 @@
                         Save Card
                     </button>
                 </form>
-
             </div>
 
             <div class="journal-list animate-fade-up-delay-2">
@@ -68,10 +68,9 @@
                 <div id="entries-container"></div>
             </div>
         </section>
-
     </main>
 
-    <script src="js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 
 </html>

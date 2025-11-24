@@ -5,14 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Journal - Projects</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+
     <script>
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("sw.js");
+            navigator.serviceWorker.register("{{ url_for('service_worker') }}");
         }
     </script>
-
 </head>
 
 <body>
@@ -61,7 +62,7 @@
                     <li class="pill">REST APIs</li>
                 </ul>
                 <span class="status-tag status-in-progress">In Progress</span>
-                <a href="index.html" class="btn ghost-btn small-btn">
+                <a href="{{ url_for('home') }}" class="btn ghost-btn small-btn">
                     Go to Home Page
                 </a>
             </article>
@@ -111,6 +112,7 @@
                 <button class="btn ghost-btn small-btn" disabled>Coming Soon</button>
             </article>
         </section>
+
         <section class="video-lab glass-card animate-card">
             <h2 class="gradient-text small-title">YouTube Video Tester</h2>
             <p>
@@ -135,11 +137,10 @@
                 <div id="youtube-player"></div>
             </div>
         </section>
-
     </main>
 
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 
 </html>

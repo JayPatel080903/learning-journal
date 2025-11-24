@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reflective Journal</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("{{ url_for('service_worker') }}");
+        }
+    </script>
+
+    <!-- Shared Navbar + Footer -->
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    <!-- Page-specific JS -->
+    <script src="{{ url_for('static', filename='js/form4JS.js') }}" defer></script>
+</head>
+
+<body onload="init()">
+    <div id="nav-container"></div>
+
+    <main class="page">
+        <section class="page-header">
+            <h1 class="gradient-text hero-title animate-fade-up">Reflective Journal</h1>
+            <p class="hero-subtitle animate-fade-up-delay">
+                Today is <span id="todayDate"></span>
+            </p>
+        </section>
+
+        <section class="journal-layout">
+
+            <!-- LEFT: Journal Form -->
+            <div class="glass-card animate-card journal-form">
+                <h2 class="gradient-text small-title">Write a Reflection</h2>
+
+                <form name="myForm" onsubmit="return checkReflection()">
+                    <div class="form-group">
+                        <label for="fname">Name</label>
+                        <input type="text" id="fname" name="fname" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reflection">Reflection</label>
+                        <textarea id="reflection" name="reflection" minlength="10"
+                            placeholder="What did you learn? What challenged you?" rows="6" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn primary-btn">Submit</button>
+                    <button type="reset" class="btn ghost-btn" style="margin-left:8px;">Reset</button>
+                </form>
+            </div>
+
+            <!-- RIGHT: Reflection List -->
+            <div class="journal-list animate-fade-up-delay-2">
+                <h2 class="gradient-text small-title">Previous Reflections</h2>
+                <div id="viewAll" class="reflection-container"></div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

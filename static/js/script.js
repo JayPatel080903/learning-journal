@@ -7,15 +7,16 @@ function injectNavbar() {
             <nav class="navbar">
                 <div class="nav-logo">
                     <!-- Logo on the left -->
-                    <a href="index.html">LJ</a>
+                    <a href="/">LJ</a>
                 </div>
 
                 <!-- Center navigation links (desktop) -->
                 <ul class="nav-links">
-                    <li><a href="index.html" data-page="home">Home</a></li>
-                    <li><a href="journal.html" data-page="journal">Journal</a></li>
-                    <li><a href="project.html" data-page="project">Project</a></li>
-                    <li><a href="about.html" data-page="about">About</a></li>
+                    <li><a href="/" data-page="home">Home</a></li>
+                    <li><a href="/journal" data-page="journal">Journal</a></li>
+                    <li><a href="/project" data-page="project">Project</a></li>
+                    <li><a href="/about" data-page="about">About</a></li>
+                    <li><a href="/reflection" data-page="reflection">Reflective Form</a></li>
                 </ul>
 
                 <!-- Right side: theme toggle + mobile menu button -->
@@ -34,10 +35,11 @@ function injectNavbar() {
             <div class="nav-overlay">
                 <div class="nav-overlay-inner">
                     <ul class="nav-overlay-links">
-                        <li><a href="index.html" data-page="home">Home</a></li>
-                        <li><a href="journal.html" data-page="journal">Journal</a></li>
-                        <li><a href="project.html" data-page="project">Project</a></li>
-                        <li><a href="about.html" data-page="about">About</a></li>
+                        <li><a href="/" data-page="home">Home</a></li>
+                        <li><a href="/journal" data-page="journal">Journal</a></li>
+                        <li><a href="/project" data-page="project">Project</a></li>
+                        <li><a href="/about" data-page="about">About</a></li>
+                        <li><a href="/reflection" data-page="reflection">Reflective Form</a></li>
                     </ul>
                 </div>
             </div>
@@ -46,11 +48,13 @@ function injectNavbar() {
 }
 
 function getCurrentPageKey() {
-  const path = window.location.pathname.split("/").pop() || "index.html";
-
-  if (path === "" || path === "index.html") return "home";
-  const base = path.replace(".html", "");
-  return base || "home";
+  const path = window.location.pathname || "/";
+  if (path === "/" || path === "") return "home";
+  if (path.startsWith("/journal")) return "journal";
+  if (path.startsWith("/project")) return "project";
+  if (path.startsWith("/about")) return "about";
+  if (path.startsWith("/reflection")) return "reflection";
+  return "home";
 }
 
 function setActiveNavLink() {
@@ -83,14 +87,16 @@ function initTheme() {
     return;
   }
 
-  const prefersDark = window.matchMedia &&
+  const prefersDark =
+    window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   applyTheme(prefersDark ? "dark" : "light");
 }
 
 function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme") || "light";
+  const current =
+    document.documentElement.getAttribute("data-theme") || "light";
   const next = current === "light" ? "dark" : "light";
   applyTheme(next);
 }
@@ -117,11 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
   injectNavbar();
 
   initTheme();
-
   setActiveNavLink();
-
   initLiveDateTime();
-
   injectFooter();
 
   const themeToggleBtn = document.querySelector(".nav-theme-toggle");
@@ -188,6 +191,7 @@ function initLiveDateTime() {
   setInterval(updateDateTime, 1000);
 }
 
+/* ------- journal page logic (unchanged) ------- */
 if (document.querySelector("#journal-form")) {
   const form = document.getElementById("journal-form");
   const addQA = document.getElementById("add-qa");
@@ -222,7 +226,6 @@ if (document.querySelector("#journal-form")) {
       const card = document.createElement("div");
       card.classList.add("journal-entry-card", "glass-card");
 
-      // Build Q/A list
       let qaHTML = "";
       entry.qa.forEach((item, i) => {
         qaHTML += `
@@ -276,10 +279,12 @@ if (document.querySelector("#journal-form")) {
       return;
     }
 
-    const qaPairs = questions.map((q, i) => ({
-      q: q.value.trim(),
-      a: answers[i].value.trim()
-    })).filter(pair => pair.q !== "" || pair.a !== "");
+    const qaPairs = questions
+      .map((q, i) => ({
+        q: q.value.trim(),
+        a: answers[i].value.trim(),
+      }))
+      .filter((pair) => pair.q !== "" || pair.a !== "");
 
     if (qaPairs.length === 0) {
       alert("Add at least one Question & Answer.");
@@ -289,7 +294,7 @@ if (document.querySelector("#journal-form")) {
     const newEntry = {
       title,
       date,
-      qa: qaPairs
+      qa: qaPairs,
     };
 
     const entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -323,17 +328,17 @@ if (document.querySelector("#journal-form")) {
         qa: [
           {
             q: "How did you approach mobile-first design?",
-            a: "I started by designing the layout for mobile size screens first, ensuring that all text, navigation, and content were readable and well spaced on a mobile device. Once the mobile version looked clean, I used CSS media queries to gradually enhance the layout for tablets and desktops."
+            a: "I started by designing the layout for mobile size screens first, ensuring that all text, navigation, and content were readable and well spaced on a mobile device. Once the mobile version looked clean, I used CSS media queries to gradually enhance the layout for tablets and desktops.",
           },
           {
             q: "Most useful HTML/CSS concept?",
-            a: "The most useful concept was Flexbox and media queries, which made it easy to align navigation links and structure content sections responsively. Also shared CSS is very useful because all CSS can handle in single file."
+            a: "The most useful concept was Flexbox and media queries, which made it easy to align navigation links and structure content sections responsively. Also shared CSS is very useful because all CSS can handle in single file.",
           },
           {
             q: "Most challenging part?",
-            a: "Most challenging part of CSS is to handle alignment and spacing for all elements. Otherwise for HTML it is looking easier."
-          }
-        ]
+            a: "Most challenging part of CSS is to handle alignment and spacing for all elements. Otherwise for HTML it is looking easier.",
+          },
+        ],
       },
       {
         title: "Lab-3",
@@ -341,18 +346,18 @@ if (document.querySelector("#journal-form")) {
         qa: [
           {
             q: "Which DOM selection methods did you use?",
-            a: "I used several DOM selection methods, including getElementById() and querySelectorAll(). getElementById() was used when I needed to target specific elements like the navigation container (nav-container), the journal form (journal-form), and buttons such as the theme toggle (theme-btn), because it directly selects a unique element and is efficient. and querySelectorAll() was used to apply logic to multiple elements, like highlighting the active navigation link, since it allows selecting multiple items using CSS selectors and iterating through them easily."
+            a: "I used several DOM selection methods, including getElementById() and querySelectorAll(). getElementById() was used when I needed to target specific elements like the navigation container (nav-container), the journal form (journal-form), and buttons such as the theme toggle (theme-btn), because it directly selects a unique element and is efficient. and querySelectorAll() was used to apply logic to multiple elements, like highlighting the active navigation link, since it allows selecting multiple items using CSS selectors and iterating through them easily.",
           },
           {
             q: "Most challenging part of linking JS?",
-            a: "The most challenging part was ensuring that the JavaScript file loaded correctly on all pages and that elements existed in the DOM before running certain functions. Since the same script is reused across multiple pages, I had to use conditional checks (like if (navContainer) { ... }) to prevent errors on pages where specific elements weren’t present. Managing event listeners for dynamic elements such as collapsible sections and theme buttons also required careful handling."
+            a: "The most challenging part was ensuring that the JavaScript file loaded correctly on all pages and that elements existed in the DOM before running certain functions. Since the same script is reused across multiple pages, I had to use conditional checks (like if (navContainer) { ... }) to prevent errors on pages where specific elements weren’t present. Managing event listeners for dynamic elements such as collapsible sections and theme buttons also required careful handling.",
           },
           {
             q: "How did you test/debug JS?",
-            a: "I tested the code by opening each page in the browser and checking whether the navigation loaded automatically, the theme toggle worked, and form validation behaved correctly. I used the browser’s Developer Tools Console to monitor for any JavaScript errors, used console.log() statements for debugging logic, and refreshed pages after each update to confirm that DOM manipulations were happening correctly."
-          }
-        ]
-      }
+            a: "I tested the code by opening each page in the browser and checking whether the navigation loaded automatically, the theme toggle worked, and form validation behaved correctly. I used the browser’s Developer Tools Console to monitor for any JavaScript errors, used console.log() statements for debugging logic, and refreshed pages after each update to confirm that DOM manipulations were happening correctly.",
+          },
+        ],
+      },
     ];
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(samples));
@@ -363,6 +368,7 @@ if (document.querySelector("#journal-form")) {
   loadEntries();
 }
 
+/* ------- YouTube player code (unchanged) ------- */
 let ytPlayer = null;
 let pendingVideoId = null;
 
@@ -375,7 +381,11 @@ function extractYouTubeId(url) {
       return parsed.pathname.slice(1);
     }
 
-    if (host === "youtube.com" || host === "m.youtube.com" || host === "youtube-nocookie.com") {
+    if (
+      host === "youtube.com" ||
+      host === "m.youtube.com" ||
+      host === "youtube-nocookie.com"
+    ) {
       if (parsed.searchParams.get("v")) {
         return parsed.searchParams.get("v");
       }
@@ -403,7 +413,6 @@ function createOrLoadPlayer(videoId) {
   const wrapper = document.querySelector(".video-frame-wrapper");
   if (!container) return;
 
-
   if (!window.YT || !YT.Player) {
     pendingVideoId = videoId;
     return;
@@ -419,15 +428,15 @@ function createOrLoadPlayer(videoId) {
     videoId: videoId,
     playerVars: {
       rel: 0,
-      modestbranding: 1
+      modestbranding: 1,
     },
     events: {
       onReady: function () {
         const controls = document.getElementById("video-controls");
         if (controls) controls.hidden = false;
         if (wrapper) wrapper.classList.add("active");
-      }
-    }
+      },
+    },
   });
 }
 
@@ -468,6 +477,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+/* ------- footer + install prompt ------- */
 function injectFooter() {
   const footerHTML = `
         <footer class="site-footer">

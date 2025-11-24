@@ -5,14 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Journal - About</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+
     <script>
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("sw.js");
+            navigator.serviceWorker.register("{{ url_for('service_worker') }}");
         }
     </script>
-
 </head>
 
 <body>
@@ -29,8 +30,8 @@
         <section class="about-layout">
 
             <div class="about-card glass-card animate-card">
-
-                <img src="images/jay-profile.jpg" alt="Jay Patel Profile" class="profile-img">
+                <img src="{{ url_for('static', filename='images/jay-profile.jpg') }}" alt="Jay Patel Profile"
+                    class="profile-img">
 
                 <h2 class="gradient-text small-title">Hi, I’m Jay Rajendrakumar Patel</h2>
 
@@ -38,10 +39,9 @@
 
                 <p>
                     I am currently pursuing my <strong>Bachelor’s degree in Computer Science</strong> at the University
-                    for
-                    the Creative Arts. My academic journey is fueled by a deep-seated passion for
-                    <strong>technology</strong>
-                    and, more specifically, a strong interest in <strong>web development</strong>. I believe in creating
+                    for the Creative Arts. My academic journey is fueled by a deep-seated passion for
+                    <strong>technology</strong> and, more specifically, a strong interest in <strong>web
+                        development</strong>. I believe in creating
                     innovative, functional, and user-friendly digital experiences.
                 </p>
 
@@ -85,10 +85,9 @@
             </div>
 
         </section>
-
     </main>
 
-    <script src="js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 
 </html>
